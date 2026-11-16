@@ -72,3 +72,66 @@ from rivals.settings import DECISION_COLUMNS
 #    st.subheader "Only them — what we don't sell yet" and st.dataframe of the
 #    gaps rows where `where` is "only them"; then st.subheader "Only us — what sets
 #    us apart" and the "only us" rows.
+
+st.set_page_config(layout="wide")
+st.title("Salt City: Prices and Gaps")
+
+if not os.path.exists(MENUS_FILE):
+    st.info("No menus yet — run the scraper on the Scrape page.")
+    st.stop()
+
+menus = pd.read_csv(MENUS_FILE)
+
+if os.path.exists(DECISIONS_FILE):
+    decisions = pd.read_csv(DECISIONS_FILE)
+else:
+    decisions = pd.DataFrame(columns=DECISION_COLUMNS)
+
+matches = match_items(menus, decisions)
+waiting = matches["status"].eq("unreviewed").sum()
+
+if waiting:
+    st.warning(
+        f"{waiting} unreviewed items are left out of the analysis. "
+        "Finish reviewing them on the Review Matches page."
+    )
+
+menus = add_canonical(menus, matches)
+prices = price_table(menus)
+comparison = compare_prices(prices)
+gaps = gap_analysis(menus)
+
+prices_tab, gaps_tab = st.tabs(["Prices", "Gaps"])
+
+with prices_tab:
+    positions = comparison["our_position"]
+    below = positions.isin([BELOW_ALL, BELOW_AVERAGE]).sum()
+    above = positions.isin([ABOVE_ALL, ABOVE_AVERAGE]).sum()
+
+    below_card, above_card = st.columns(2)
+    below_card.metric("Priced below the market", int(below))
+    above_card.metric("Priced above the market", int(above))
+
+    products = st.multiselect(
+        "Products",
+        options=sorted(comparison["canonical"].unique()),
+        key="products",
+        placeholder="All products",
+    )
+
+    shown = comparison
+    if products:
+        shown = comparison.loc[comparison["canonical"].isin(products)]
+
+    st.dataframe(shown, hide_index=True)
+    st.caption(
+        "👍👍 Lower than all rivals · 👍 Lower than their average · "
+        "👉👈 Average · 👎 Higher than their average · 👎👎 Higher than all rivals"
+    )
+
+    with gaps_tab:
+        st.subheader("Only them — what we don't sell yet")
+        st.dataframe(gaps.loc[gaps["where"] == "only them"], hide_index=True)
+
+        st.subheader("Only us — what sets us apart")
+        st.dataframe(gaps.loc[gaps["where"] == "only us"], hide_index=True)

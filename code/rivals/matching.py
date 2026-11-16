@@ -201,11 +201,8 @@ def match_items(menus: pd.DataFrame, decisions: pd.DataFrame) -> pd.DataFrame:
             "score": score,
             "suggestions": suggestions,
         })
-
-    return pd.DataFrame(
-        rows,
-        columns=["cafe", "item", "kind", "status", "matched_to", "score", "suggestions"],
-    )
+    columns = ["cafe", "item", "kind", "status", "matched_to", "score", "suggestions"]
+    return pd.DataFrame(rows, columns=columns)
 
 
 def record_decision(decisions: pd.DataFrame, cafe: str, item: str,

@@ -60,9 +60,9 @@ st.title("Salt City: Scrape the Rivals")
 st.markdown("Pick the cafés to scrape. Each run replaces the saved dataset.")
 
 cafes = st.multiselect(
-    "Cafés", 
-    options=list(CAFES), 
-    default=list(CAFES), 
+    "Cafés",
+    options=list(CAFES),
+    default=list(CAFES),
     key="cafes",
 )
 
@@ -90,7 +90,7 @@ row_card.metric("Rows", len(theirs))
 st.dataframe(menus, hide_index=True)
 st.download_button(
     "Download the dataset",
-    data = menus.to_csv(index=False),
+    data=menus.to_csv(index=False),
     file_name="menu.csv",
     mime="text/csv",
     key="download",

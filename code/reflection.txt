@@ -1,8 +1,5 @@
-Write your reflection here.
+For Lakeshore, I used a CSS class selector to find the section headings and the ~ sibling selector to get to the menu grid because there was a note between the heading and the grid. Hilltop was different because the menu was already in HTML tables. I used read_html() to load them and melt() to turn the size columns into rows.
 
-See reflection.md for what makes a good reflection — be specific, use the
-terminology from this assignment (HTML element, CSS selector, class and id
-selectors, sibling selector, inner_text, attribute, headless browser, waiting for
-JavaScript, crawling, pagination, read_html, melt, fuzzy matching, normalization,
-threshold, human in the loop, merge indicator, gap analysis), and make it
-actionable.
+The part I want more practice with is waiting for JavaScript in Playwright. Canal Street used pagination, so after clicking Show more, I had to wait until the number of cards increased. I can print the card count after each click to check whether the headless browser is picking up every batch.
+
+I also learned why fuzzy matching needs a human in the loop. I went through some of the review choices too quickly at first and had to redo them. That made it easier to see how one bad match can affect both the price comparison and the gap analysis. Next time, I’d spot-check the saved decisions before interpreting the analysis, especially for names that look similar or describe different versions of a drink.
